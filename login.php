@@ -10,12 +10,17 @@ function cubiq_login_init () {
 		$action = 'post-data';
 	} else if ( isset( $_GET['reauth'] ) ) {
 		$action = 'reauth';
-	} else if ( isset($_GET['key']) ) {
-		$action = 'resetpass-key';
 	}
 
 	// redirect to change password form
 	if ( $action == 'rp' || $action == 'resetpass' ) {
+		if( isset($_GET['key']) && isset($_GET['login']) ) {
+			$rp_path = wp_unslash('/login/');
+			$rp_cookie	= 'wp-resetpass-' . COOKIEHASH;
+			$value = sprintf( '%s:%s', wp_unslash( $_GET['login'] ), wp_unslash( $_GET['key'] ) );
+			setcookie( $rp_cookie, $value, 0, $rp_path, COOKIE_DOMAIN, is_ssl(), true );
+		}
+		
 		wp_redirect( home_url('/login/?action=resetpass') );
 		exit;
 	}
@@ -29,7 +34,6 @@ function cubiq_login_init () {
 	if (
 		$action == 'post-data'		||			// don't mess with POST requests
 		$action == 'reauth'			||			// need to reauthorize
-		$action == 'resetpass-key'	||			// password recovery
 		$action == 'logout'						// user is logging out
 	) {
 		return;
