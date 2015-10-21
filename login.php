@@ -6,11 +6,10 @@
 function cubiq_login_init () {
 	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'login';
 
-	if ( isset( $_POST['wp-submit'] ) ) {
+	if ( isset( $_POST['wp-submit'] ) )
 		$action = 'post-data';
-	} else if ( isset( $_GET['reauth'] ) ) {
+	else if ( isset( $_GET['reauth'] ) )
 		$action = 'reauth';
-	}
 
 	// redirect to change password form
 	if ( $action == 'rp' || $action == 'resetpass' ) {
@@ -35,9 +34,8 @@ function cubiq_login_init () {
 		$action == 'post-data'		||			// don't mess with POST requests
 		$action == 'reauth'			||			// need to reauthorize
 		$action == 'logout'						// user is logging out
-	) {
+	)
 		return;
-	}
 
 	wp_redirect( home_url( '/login/' ) );
 	exit;
@@ -90,31 +88,18 @@ function cubiq_registration_redirect ($errors, $sanitized_user_login, $user_emai
 	}
 
 	if ( !empty( $errors->errors) ) {
-		if ( isset( $errors->errors['username_exists'] ) ) {
-
+		if ( isset( $errors->errors['username_exists'] ) )
 			wp_redirect( home_url('/login/') . '?action=register&failed=username_exists' );
-
-		} else if ( isset( $errors->errors['email_exists'] ) ) {
-
+		else if ( isset( $errors->errors['email_exists'] ) )
 			wp_redirect( home_url('/login/') . '?action=register&failed=email_exists' );
-
-		} else if ( isset( $errors->errors['invalid_username'] ) ) {
-
+		else if ( isset( $errors->errors['invalid_username'] ) )
 			wp_redirect( home_url('/login/') . '?action=register&failed=invalid_username' );
-			
-		} else if ( isset( $errors->errors['invalid_email'] ) ) {
-+
-+			wp_redirect( home_url('/login/') . '?action=register&failed=invalid_email' );
-
-		} else if ( isset( $errors->errors['empty_username'] ) || isset( $errors->errors['empty_email'] ) ) {
-
+		else if ( isset( $errors->errors['invalid_email'] ) )
+			wp_redirect( home_url('/login/') . '?action=register&failed=invalid_email' );
+		else if ( isset( $errors->errors['empty_username'] ) || isset( $errors->errors['empty_email'] ) )
 			wp_redirect( home_url('/login/') . '?action=register&failed=empty' );
-
-		} else {
-
+		else
 			wp_redirect( home_url('/login/') . '?action=register&failed=generic' );
-
-		}
 
 		exit;
 	}
@@ -130,9 +115,8 @@ add_filter('registration_errors', 'cubiq_registration_redirect', 10, 3);
  */
 function cubiq_login_redirect ($redirect_to, $url, $user) {
 
-	if ( !isset($user->errors) ) {
+	if ( !isset($user->errors) )
 		return $redirect_to;
-	}
 
 	wp_redirect( home_url('/login/') . '?action=login&failed=1');
 	exit;
@@ -148,11 +132,10 @@ function cubiq_reset_password () {
 	$user_data = '';
 
 	if ( !empty( $_POST['user_login'] ) ) {
-		if ( strpos( $_POST['user_login'], '@' ) ) {
+		if ( strpos( $_POST['user_login'], '@' ) )
 			$user_data = get_user_by( 'email', trim($_POST['user_login']) );
-		} else {
+		else
 			$user_data = get_user_by( 'login', trim($_POST['user_login']) );
-		}
 	}
 
 	if ( empty($user_data) ) {
@@ -186,5 +169,3 @@ function cubiq_validate_password_reset ($errors, $user) {
 	exit;
 }
 add_action('validate_password_reset', 'cubiq_validate_password_reset', 10, 2);
-
-
